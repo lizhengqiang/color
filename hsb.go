@@ -1,19 +1,17 @@
 package color
 
 import (
-
 	"image/color"
 	"math"
-
 )
 
 type HSB struct {
-	H    int     //色相
+	H    float64     //色相
 	S, B float64 // ,饱和度(纯度),l/b亮度
 }
 
 func (hsb HSB)Gethsb()(int,int,int){
-	return hsb.H,int(hsb.S *100),int(hsb.B *100)
+	return float2int(hsb.H,1),float2int(hsb.S,100),float2int(hsb.B,100)
 }
 
 func RGBToHLS(rgb color.RGBA) (hsb HSB) {
@@ -40,14 +38,14 @@ func RGBToHLS(rgb color.RGBA) (hsb HSB) {
 		hsb.S = 0
 	} else if rgb_max == r {
 		if g >= b {
-			hsb.H = int(60 * (g - b) / delta)
+			hsb.H =  60 * (g - b) / delta
 		} else {
-			hsb.H = int(60*(g-b)/delta + 360)
+			hsb.H =  60*(g-b)/delta + 360
 		}
 	} else if rgb_max == g {
-		hsb.H = int(60*(b-r)/delta + 120)
+		hsb.H =  60*(b-r)/delta + 120
 	} else {
-		hsb.H = int(60*(r-g)/delta + 240)
+		hsb.H = 60*(r-g)/delta + 240
 	}
 
 	return
@@ -55,7 +53,7 @@ func RGBToHLS(rgb color.RGBA) (hsb HSB) {
 
 func (hsl HSB) HSB2RGB() (color.RGBA) {
 	r,g,b:=0.0,0.0,0.0
-	i:=int((hsl.H/60)%6)
+	i:=int((float2int(hsl.H,1)/60)%6)
 	var f float64=float64(hsl.H)/60.0-float64(i)
 	p:=hsl.B*(1-hsl.S)
 	q:=hsl.B*(1.0-f*hsl.S)
@@ -87,5 +85,13 @@ func (hsl HSB) HSB2RGB() (color.RGBA) {
 		g=p
 		b=q
 	}
-	return color.RGBA{R:uint8(r*255), G:uint8(g*255), B:uint8(b*255)}
+	return color.RGBA{R:uint8(float2int(r,255)), G:uint8(float2int(g,255)), B:uint8(float2int(b,255))}
+}
+
+func float2int(f float64,maxrange float64 )int{
+	if(f*maxrange-float64(int(f*maxrange))<=0.5){
+		return int(f*maxrange)
+	}else {
+		return int(f*maxrange)
+	}
 }
