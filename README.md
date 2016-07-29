@@ -8,36 +8,25 @@ import (
 )
 
 func main() {
-
-		hbs :=hbscolor.RGBToHLS(color.RGBA{R:153, G: 153, B:153})
-    	fmt.Print(hbs.Gethsb())
-    
-    	rgb:=hbs.HSB2RGB()
-    	fmt.Println(rgb)
-    	hbs =hbscolor.RGBToHLS(color.RGBA{R:255, G: 255, B:255})
-    	fmt.Print(hbs.Gethsb())
-    
-    	rgb=hbs.HSB2RGB()
-    	fmt.Println(rgb)
-    
-    	hbs=hbscolor.RGBToHLS(color.RGBA{R:0, G: 0, B:0})
-    	fmt.Print(hbs.Gethsb())
-    
-    	rgb=hbs.HSB2RGB()
-    	fmt.Println(rgb)
-    
-    	hbs=hbscolor.RGBToHLS(color.RGBA{R:127, G: 0, B:127})
-    	fmt.Print(hbs.Gethsb())
-    
-    	rgb=hbs.HSB2RGB()
-    	fmt.Println(rgb)
+	count,incorrect:=0,0
+	for r:=0;r<256;r++{
+		for g:=0;g<256;g++{
+			for b:=0;b<256;b++{
+				c:=color.RGBA{R:uint8(r), G: uint8(g), B:uint8(b)}
+				hbs :=hbscolor.RGBToHLS(c)
+				count++
+				rgb:=hbs.HSB2RGB()
+				if(c.R!=rgb.R||c.G!=rgb.G||c.B!=rgb.B){
+					incorrect++
+				}
+			}
+		}
+	}
+	fmt.Println("count:",count,"incorrect",incorrect,float64(incorrect)/float64(count),"%")
 }
 ```
 
 output
 ```
-0 0 60{153 153 153 0}
-0 0 100{255 255 255 0}
-0 0 0{0 0 0 0}
-300 100 49{127 0 127 0}
+count: 16777216 incorrect 8099558 0.48277127742767334 %
 ```
